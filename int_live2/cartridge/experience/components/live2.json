@@ -1,0 +1,25 @@
+{
+    "name": "Live2 Component",
+    "description": "description",
+    "group": "Live2",
+    "attribute_definition_groups": [
+      {
+        "id": "live2ComponentDefination",
+        "attribute_definitions": [
+          {
+            "id": "publishID",
+            "name": "Publish ID",
+            "type": "string",
+            "required": false
+          },
+          {
+            "id": "customCSS",
+            "name": "Custom CSS",
+            "type": "text",
+            "required": false
+          }
+        ]
+      }
+    ],
+    "region_definitions": []
+  }

@@ -1,0 +1,54 @@
+{
+    "step-types": {
+        "script-module-step": [
+            {
+                "@type-id": "custom.executeFullCatalogExport",
+                "@supports-site-context": true,
+                "@supports-parallel-execution": "false",
+                "description": "Catalog Export",
+                "module": "int_live2/cartridge/scripts/steps/CatalogExportStep",
+                "function": "executeFullCatalogExport",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when the step failed with an error."
+                        },
+                        {
+                            "@code": "FINISHED",
+                            "description": "Used when the step finished successfully."
+                        },
+                        {
+                            "@code": "FINISHED_WITH_WARNINGS",
+                            "description": "Used when the step finished with warnings."
+                        }
+                    ]
+                }
+            },
+            {
+                "@type-id": "custom.splitCatalogExport",
+                "@supports-site-context": true,
+                "@supports-parallel-execution": "false",
+                "description": "Split Catalog Export",
+                "module": "int_live2/cartridge/scripts/steps/CatalogExportStep",
+                "function": "splitCatalogExport",
+                "status-codes": {
+                    "status": [
+                        {
+                            "@code": "ERROR",
+                            "description": "Used when the step failed with an error."
+                        },
+                        {
+                            "@code": "FINISHED",
+                            "description": "Used when the step finished successfully."
+                        },
+                        {
+                            "@code": "FINISHED_WITH_WARNINGS",
+                            "description": "Used when the step finished with warnings."
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}
