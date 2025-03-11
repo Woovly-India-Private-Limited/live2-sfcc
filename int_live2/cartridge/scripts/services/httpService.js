@@ -13,57 +13,44 @@ var preferences = require('*/cartridge/config/preferences');
  * @returns {dw.svc.Service} Configured service instance
  */
 function getHttpService() {
-  return LocalServiceRegistry.createService('int_live2.http.service', {
-    createRequest: function (service, requestData) {
-      var headers;
-      var headersObj;
-      var apiKey;
-      
-      // Set request headers
-      service.addHeader('Content-Type', 'application/json');
-      
-      // Add custom headers from site preferences if available
-      headers = preferences.catalogExportHeaders;
-      if (headers) {
-        try {
-          headersObj = JSON.parse(headers);
-          Object.keys(headersObj).forEach(function (key) {
-            service.addHeader(key, headersObj[key]);
-          });
-        } catch (e) {
-          Logger.error('Failed to parse custom headers: ' + e.message);
+    return LocalServiceRegistry.createService('int_live2.http.service', {
+        createRequest: function (service, requestData) {
+            var headers;
+            var headersObj;
+            var apiKey;
+
+            // Set request headers
+            service.addHeader('Content-Type', 'application/json');
+
+
+            apiKey = preferences.catalogExportApiKey;
+            if (apiKey) {
+                service.addHeader('Authorization', 'Bearer ' + apiKey);
+            }
+
+            return JSON.stringify(requestData);
+        },
+        parseResponse: function (service, response) {
+            return {
+                statusCode: response.statusCode,
+                statusMessage: response.statusMessage,
+                body: response.text ? JSON.parse(response.text) : null
+            };
+        },
+        mockCall: function () {
+            return {
+                statusCode: 200,
+                statusMessage: 'OK',
+                body: {
+                    success: true,
+                    message: 'Mock response for catalog export'
+                }
+            };
+        },
+        filterLogMessage: function (message) {
+            return message;
         }
-      }
-      
-      // Add authentication headers if available
-      apiKey = preferences.catalogExportApiKey;
-      if (apiKey) {
-        service.addHeader('Authorization', 'Bearer ' + apiKey);
-      }
-      
-      return JSON.stringify(requestData);
-    },
-    parseResponse: function (service, response) {
-      return {
-        statusCode: response.statusCode,
-        statusMessage: response.statusMessage,
-        body: response.text ? JSON.parse(response.text) : null
-      };
-    },
-    mockCall: function () {
-      return {
-        statusCode: 200,
-        statusMessage: 'OK',
-        body: {
-          success: true,
-          message: 'Mock response for catalog export'
-        }
-      };
-    },
-    filterLogMessage: function (message) {
-      return message;
-    }
-  });
+    });
 }
 
 /**
@@ -74,26 +61,28 @@ function getHttpService() {
  * @returns {Object} The response
  */
 function callService(method, url, data) {
-  var service = getHttpService();
-  var result;
-  
-  service.setURL(url);
-  service.setRequestMethod(method);
-  
-  try {
-    result = service.call(data);
-    
-    if (result.isOk()) {
-      Logger.info('API call successful: ' + url);
-      return result.object;
+    var service = getHttpService();
+    var result;
+
+    service.setURL(url);
+    service.setRequestMethod(method);
+
+    try {
+        result = service.call(data);
+
+        if (result.isOk()) {
+            Logger.info('API call successful: ' + url);
+            return result.object;
+        }
+
+        Logger.error(
+            'API call failed: ' + url + ', Error: ' + result.errorMessage
+        );
+        throw new Error('API call failed: ' + result.errorMessage);
+    } catch (e) {
+        Logger.error('Exception in API call: ' + e.message);
+        throw e;
     }
-    
-    Logger.error('API call failed: ' + url + ', Error: ' + result.errorMessage);
-    throw new Error('API call failed: ' + result.errorMessage);
-  } catch (e) {
-    Logger.error('Exception in API call: ' + e.message);
-    throw e;
-  }
 }
 
 /**
@@ -103,7 +92,7 @@ function callService(method, url, data) {
  * @returns {Object} The response
  */
 function post(url, data) {
-  return callService('POST', url, data);
+    return callService('POST', url, data);
 }
 
 /**
@@ -112,7 +101,7 @@ function post(url, data) {
  * @returns {Object} The response
  */
 function get(url) {
-  return callService('GET', url, null);
+    return callService('GET', url, null);
 }
 
 /**
@@ -122,7 +111,7 @@ function get(url) {
  * @returns {Object} The response
  */
 function put(url, data) {
-  return callService('PUT', url, data);
+    return callService('PUT', url, data);
 }
 
 /**
@@ -131,13 +120,13 @@ function put(url, data) {
  * @returns {Object} The response
  */
 function del(url) {
-  return callService('DELETE', url, null);
+    return callService('DELETE', url, null);
 }
 
 module.exports = {
-  callService: callService,
-  post: post,
-  get: get,
-  put: put,
-  del: del
+    callService: callService,
+    post: post,
+    get: get,
+    put: put,
+    del: del
 };

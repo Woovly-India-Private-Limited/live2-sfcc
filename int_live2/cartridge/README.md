@@ -27,7 +27,7 @@ This cartridge requires the following site preferences to be configured:
 - **catalogExportApiKey**: API key for authentication (used for both incoming requests and outgoing API calls)
 - **catalogExportDestinationURL**: The URL of the external API where the catalog data will be sent
 - **catalogExportJobID**: ID of the export job (default: export-catalog-job)
-- **catalogExportHeaders**: JSON string containing additional headers to include in the API request (optional)
+(optional)
 - **productWebhooksEnabled**: Boolean indicating whether to send real-time webhooks on product changes (default: false)
 - **productWebhookURL**: The URL where product webhook events are sent
 
@@ -99,7 +99,7 @@ Webhook payload format:
 
 ```json
 {
-  "event": "create|update|delete", 
+  "event": "create|update|delete",
   "timestamp": "2025-01-01T00:00:00.000Z",
   "product": {
     "ID": "product-id",
@@ -163,4 +163,4 @@ All errors are logged to the custom log files:
 
 ## Support
 
-For support or feature requests, please contact your Salesforce Commerce Cloud representative. 
+For support or feature requests, please contact your Salesforce Commerce Cloud representative.

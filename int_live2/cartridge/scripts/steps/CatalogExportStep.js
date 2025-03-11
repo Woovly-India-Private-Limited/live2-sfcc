@@ -7,6 +7,7 @@
 var Status = require('dw/system/Status');
 var Logger = require('dw/system/Logger').getLogger('int_live2', 'catalogExport');
 var System = require('dw/system/System');
+var preferences = require('int_live2/cartridge/config/preferences');
 
 var catalogExportService = require('int_live2/cartridge/scripts/services/catalogExportService');
 var httpService = require('int_live2/cartridge/scripts/services/httpService');
@@ -43,6 +44,9 @@ function executeFullCatalogExport(parameters) {
         }
 
         // Send data to the external API
+        catalogData.teamId = preferences.live2TeamId;
+        catalogData.token = preferences.live2Token;
+
         httpService.post(destinationURL, catalogData);
 
         endTime = Date.now();
@@ -61,20 +65,9 @@ function executeFullCatalogExport(parameters) {
     }
 }
 
-/**
- * Split catalog export job to process in chunks
- * @param {dw.util.HashMap} parameters - Job parameters
- * @returns {dw.system.Status} The execution status
- */
-function splitCatalogExport() {
-    // This function would be implemented to split large catalogs into manageable chunks
-    // For very large catalogs, processing everything at once might cause timeouts or memory issues
 
-    Logger.info('Split catalog export not yet implemented');
-    return new Status(Status.OK);
-}
 
 module.exports = {
-    executeFullCatalogExport: executeFullCatalogExport,
-    splitCatalogExport: splitCatalogExport
+    executeFullCatalogExport: executeFullCatalogExport
+
 };

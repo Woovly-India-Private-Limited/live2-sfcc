@@ -22,23 +22,23 @@ function extractFullCatalogData() {
     if (!siteCatalog) {
         throw new Error('Site catalog not found');
     }
-    
+
     var root = siteCatalog.getRoot();
     if (!root) {
         throw new Error('Root category not found');
     }
-    
+
     // Get all categories
     var categories = catalogProcessor.getAllCategories(root);
-    
+
     // Get all products
     var products = [];
     var totalVariants = 0;
-    
+
     var productsIterator = ProductMgr.queryAllSiteProducts();
     while (productsIterator.hasNext()) {
         var product = productsIterator.next();
-        
+
         // Only process master products
         if (product.isMaster()) {
             var productData = catalogProcessor.processProduct(product);
@@ -47,7 +47,7 @@ function extractFullCatalogData() {
         }
     }
     productsIterator.close();
-    
+
     return {
         exportTimestamp: StringUtils.formatCalendar(new Calendar(), 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\''),
         siteId: Site.getCurrent().getID(),
@@ -58,5 +58,5 @@ function extractFullCatalogData() {
 }
 
 module.exports = {
-    extractFullCatalogData: extractFullCatalogData,
-}; 
+    extractFullCatalogData: extractFullCatalogData
+};
