@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
     <service-credential service-credential-id="int_live2.credentials">
-        <url>https://760f-34-93-195-88.ngrok-free.app/api/live2-public/sfcc-products/</url>
-        <user-id />
-        <password />
+        <url>https://api.example.com</url> <!-- Replace with actual API endpoint -->
+        <user-id></user-id>
+        <password encrypted="false"></password>
     </service-credential>
-
+    
+    <service service-id="int_live2.http.service">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>int_live2</log-prefix>
+        <comm-log-enabled>true</comm-log-enabled>
+        <force-prd-enabled>true</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>int_live2.profile</profile-id>
+        <credential-id>int_live2.credentials</credential-id>
+    </service>
+    
     <service-profile service-profile-id="int_live2.profile">
         <timeout-millis>30000</timeout-millis>
         <rate-limit-enabled>false</rate-limit-enabled>
@@ -15,16 +26,4 @@
         <cb-calls>5</cb-calls>
         <cb-millis>500</cb-millis>
     </service-profile>
-
-    <service service-id="int_live2.http.service">
-        <service-type>HTTP</service-type>
-        <enabled>true</enabled>
-        <log-prefix>int_live2</log-prefix>
-        <comm-log-enabled>false</comm-log-enabled>
-        <force-prd-enabled>true</force-prd-enabled>
-        <mock-mode-enabled>false</mock-mode-enabled>
-        <profile-id>int_live2.profile</profile-id>
-        <credential-id>int_live2.credentials</credential-id>
-    </service>
-
-</services>
+</services> 

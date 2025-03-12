@@ -17,19 +17,8 @@ module.exports.render = function (context, modelIn) {
     var httpReq = JSON.parse(request.httpParameterMap.params.rawValue);
 
     model.publishID = content.publishID ? content.publishID : null;
-
-    if (!model.publishID) {
-        if (httpReq && httpReq.aspect_attributes) {
-            model.pid = httpReq.aspect_attributes.product || null;
-            model.cid = httpReq.aspect_attributes.category || null;
-        }
-        if (model.pid) {
-            model.publishID = 'p:' + model.pid;
-        } else if (model.cid) {
-            model.publishID = 'c:' + model.cid;
-        }
-    }
-
+    model.pid = httpReq.aspect_attributes.product || null;
+    model.cid = httpReq.aspect_attributes.category || null;
     model.customCSS = content.customCSS ? content.customCSS : null;
 
     // instruct 24 hours relative pagecache
