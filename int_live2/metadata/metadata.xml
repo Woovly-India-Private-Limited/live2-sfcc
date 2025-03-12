@@ -2,7 +2,14 @@
 <metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
 	<type-extension type-id="SitePreferences">
 		<custom-attribute-definitions>
-
+			<attribute-definition attribute-id="catalogExportHeaders">
+				<display-name xml:lang="x-default">Catalog Export Headers</display-name>
+				<type>string</type>
+				<mandatory-flag>false</mandatory-flag>
+				<externally-managed-flag>false</externally-managed-flag>
+				<min-length>0</min-length>
+				<field-length>0</field-length>
+			</attribute-definition>
 			<attribute-definition attribute-id="catalogExportApiKey">
 				<display-name xml:lang="x-default">Catalog Export API Key</display-name>
 				<type>string</type>
@@ -27,24 +34,53 @@
 				<min-length>0</min-length>
 				<field-length>0</field-length>
 			</attribute-definition>
-            <attribute-definition attribute-id="live2ATeamId">
-                <display-name xml:lang="x-default">Live2 AI Team ID</display-name>
-                <type>string</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <min-length>0</min-length>
-                <field-length>0</field-length>
-            </attribute-definition>
-
 		</custom-attribute-definitions>
 		<group-definitions>
 			<attribute-group group-id="Live2AI">
 				<display-name xml:lang="x-default">Live2 AI</display-name>
+				<attribute attribute-id="catalogExportHeaders" />
 				<attribute attribute-id="catalogExportApiKey" />
 				<attribute attribute-id="catalogExportDestinationURL" />
 				<attribute attribute-id="live2AIsdk" />
-                <attribute attribute-id="live2ATeamId" />
 			</attribute-group>
 		</group-definitions>
+	</type-extension>
+	<type-extension type-id="Category">
+		<custom-attribute-definitions>
+			<attribute-definition attribute-id="live2LastExportedTime">
+                <display-name xml:lang="x-default">Live2 Last Exported Time</display-name>
+                <type>string</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+		</custom-attribute-definitions>
+	</type-extension>
+	<type-extension type-id="Product">
+		<custom-attribute-definitions>
+			<attribute-definition attribute-id="live2LastExportedTime">
+                <display-name xml:lang="x-default">Live2 Last Exported Time</display-name>
+                <type>double</type>
+                <localizable-flag>false</localizable-flag>
+                <site-specific-flag>false</site-specific-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <visible-flag>false</visible-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <order-required-flag>false</order-required-flag>
+                <externally-defined-flag>false</externally-defined-flag>
+            </attribute-definition>
+			<attribute-definition attribute-id="live2Data">
+                <display-name xml:lang="x-default">Live2 Data</display-name>
+                <type>text</type>
+                <localizable-flag>false</localizable-flag>
+                <site-specific-flag>false</site-specific-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <visible-flag>false</visible-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <order-required-flag>false</order-required-flag>
+                <externally-defined-flag>false</externally-defined-flag>
+            </attribute-definition>
+		</custom-attribute-definitions>
 	</type-extension>
 </metadata>

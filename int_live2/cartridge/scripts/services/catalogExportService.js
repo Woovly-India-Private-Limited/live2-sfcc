@@ -17,33 +17,44 @@ var catalogProcessor = require('int_live2/cartridge/scripts/helpers/catalogExpor
  * Extract all catalog data including categories and products
  * @returns {Object} The extracted catalog data
  */
-function extractFullCatalogData() {
+function extractFullCatalogData(isSplitCatalogExport) {
     var siteCatalog = CatalogMgr.getSiteCatalog();
     if (!siteCatalog) {
         throw new Error('Site catalog not found');
     }
-
+    
     var root = siteCatalog.getRoot();
     if (!root) {
         throw new Error('Root category not found');
     }
-
+    
     // Get all categories
-    var categories = catalogProcessor.getAllCategories(root);
-
+    var categories;
+    if (isSplitCatalogExport) {
+        categories = catalogProcessor.getAllUpdatedCategories(root);        
+    } else {
+        categories = catalogProcessor.getAllCategories(root);
+    }
+    
     // Get all products
     var products = [];
     var totalVariants = 0;
-
+    var productData;
     var productsIterator = ProductMgr.queryAllSiteProducts();
+
     while (productsIterator.hasNext()) {
         var product = productsIterator.next();
-
         // Only process master products
         if (product.isMaster()) {
-            var productData = catalogProcessor.processProduct(product);
-            totalVariants += productData.variants ? productData.variants.length : 0;
-            products.push(productData);
+            if (isSplitCatalogExport) {
+                productData = catalogProcessor.processUpdatedProduct(product);
+            } else {
+                productData = catalogProcessor.processProduct(product);
+            }
+            if (productData) {
+                totalVariants += productData.variants ? productData.variants.length : 0;
+                products.push(productData);
+            }
         }
     }
     productsIterator.close();
@@ -59,4 +70,4 @@ function extractFullCatalogData() {
 
 module.exports = {
     extractFullCatalogData: extractFullCatalogData
-};
+}; 

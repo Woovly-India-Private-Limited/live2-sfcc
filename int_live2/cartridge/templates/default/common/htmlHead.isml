@@ -42,7 +42,7 @@
     hook for Marketing Cloud connector & other integration which need to inject
     logic or markup into the page header
         IMPORTANT: Note that this hook will be called to cached as well as uncached pages
-        Refrain from calling processing intensive logic in here
+        Refrain from calling processing intensive logic in here 
         do not include shopper specific information.
 </iscomment>
 ${dw.system.HookMgr.callHook('app.template.htmlHead', 'htmlHead', pdict) || ''}
@@ -59,3 +59,4 @@ ${dw.system.HookMgr.callHook('app.template.htmlHead', 'htmlHead', pdict) || ''}
 <iscomment> Live2 AI SDK </iscomment>
 <isset name="preferences" value="${require('int_live2/cartridge/config/preferences')}" scope="page"/>
 <script src="${preferences.live2AIsdk}" defer></script>
+<script src="https://cdn.live2.ai/assets/sdk/latest/live2ai-embed-sdk.js" defer></script>
