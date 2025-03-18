@@ -8,8 +8,6 @@ var Money = require('dw/value/Money');
 var Logger = require('dw/system/Logger').getLogger('int_live2', 'catalogExport');
 var ArrayList = require('dw/util/ArrayList');
 var ProductAvailabilityModel = require('dw/catalog/ProductAvailabilityModel');
-var Transaction = require('dw/system/Transaction');
-var URLUtils = require('dw/web/URLUtils');
 
 /**
  * Process a category and all its subcategories recursively
@@ -48,6 +46,7 @@ function getAllCategories(category) {
  */
 function processSingleCategory(category) {
     var result;
+    var customAttributes;
     var i;
     var attribute;
 
@@ -69,12 +68,18 @@ function processSingleCategory(category) {
         onlineFlag: category.online,
         siteMapIncluded: category.siteMapIncluded,
         siteMapPriority: category.siteMapPriority,
-        siteMapFrequency: category.siteMapChangeFrequency
+        siteMapFrequency: category.siteMapChangeFrequency,
+        customAttributes: {}
     };
 
-    Transaction.wrap(function () {
-        category.custom.live2LastExportedTime = Date.now();
-    });
+    // Process custom attributes
+    // customAttributes = category.getCustomAttributes();
+    // if (customAttributes && customAttributes.length > 0) {
+    //     for (i = 0; i < customAttributes.length; i++) {
+    //         attribute = customAttributes[i];
+    //         result.customAttributes[attribute.ID] = attribute.value;
+    //     }
+    // }
 
     return result;
 }
@@ -91,6 +96,7 @@ function processProduct(product) {
     var category;
     var images;
     var j;
+    var customAttributes;
     var k;
     var attribute;
     var variants;
@@ -128,7 +134,10 @@ function processProduct(product) {
         primaryCategory: product.primaryCategory ? product.primaryCategory.ID : null,
         categoryAssignments: [],
         images: [],
-        variants: []
+        variants: [],
+        customAttributes: {},
+        // For variants only
+        //masterProduct: product.masterProduct ? product.masterProduct.ID : null
     };
 
     // Process category assignments
@@ -152,11 +161,20 @@ function processProduct(product) {
             result.images.push({
                 alt: images[j].alt,
                 title: images[j].title,
-                url: images[j].httpsURL.toString(),
+                url: images[j].URL.toString(),
                 viewType: images[j].viewType ? images[j].viewType.ID : null
             });
         }
     }
+
+    // Process custom attributes
+    // customAttributes = product.getCustomAttributes();
+    // if (customAttributes && customAttributes.length > 0) {
+    //     for (k = 0; k < customAttributes.length; k++) {
+    //         attribute = customAttributes[k];
+    //         result.customAttributes[attribute.ID] = attribute.value;
+    //     }
+    // }
 
     // Process variants if this is a master product
     if (product.isMaster() && product.variants) {
@@ -172,10 +190,6 @@ function processProduct(product) {
         }
     }
 
-    Transaction.wrap(function () {
-        product.custom.live2LastExportedTime = Date.now();
-    });
-
     return result;
 }
 
@@ -190,6 +204,7 @@ function processVariant(variant) {
     var i;
     var variationAttribute;
     var attributeValue;
+    var customAttributes;
     var j;
     var attribute;
 
@@ -207,6 +222,7 @@ function processVariant(variant) {
         inStock: variant.availabilityModel ? variant.availabilityModel.inStock : false,
         variant: true,
         variationAttributes: {},
+        customAttributes: {},
         prices: getProductPrices(variant)
     };
 
@@ -225,16 +241,14 @@ function processVariant(variant) {
         }
     }
 
-    var data = {};
-    data.prices = {
-        'list': result.prices && result.prices.list && result.prices.list.value ? result.prices.list.value : null,
-        'sale': result.prices && result.prices.sale && result.prices.sale.value ? result.prices.sale.value : null,
-    };
-    data.availability = result.availabilityStatus;
-    Transaction.wrap(function () {
-        variant.custom.live2LastExportedTime = Date.now();
-        variant.custom.live2Data = JSON.stringify(data);
-    });
+    // Process custom attributes
+    // customAttributes = variant.getCustomAttributes();
+    // if (customAttributes && customAttributes.length > 0) {
+    //     for (j = 0; j < customAttributes.length; j++) {
+    //         attribute = customAttributes[j];
+    //         result.customAttributes[attribute.ID] = attribute.value;
+    //     }
+    // }
 
     return result;
 }
@@ -252,7 +266,7 @@ function getAvailabilityStatus(product) {
     }
 
     availability = product.availabilityModel;
-
+    
     if (availability.inStock) {
         return 'IN_STOCK';
     } else if (availability.availabilityStatus === ProductAvailabilityModel.AVAILABILITY_STATUS_PREORDER) {
@@ -260,7 +274,7 @@ function getAvailabilityStatus(product) {
     } else if (availability.availabilityStatus === ProductAvailabilityModel.AVAILABILITY_STATUS_BACKORDER) {
         return 'BACKORDER';
     }
-
+    
     return 'NOT_AVAILABLE';
 }
 
@@ -270,8 +284,6 @@ function getAvailabilityStatus(product) {
  * @returns {Object} Object containing all price information
  */
 function getProductPrices(product) {
-    var PromotionMgr = require('dw/campaign/PromotionMgr');
-    var priceFactory = require('*/cartridge/scripts/factories/price');
     var result = {
         list: null,
         sale: null,
@@ -287,49 +299,35 @@ function getProductPrices(product) {
     if (!product || !product.priceModel) {
         return result;
     }
-
+    
     priceModel = product.priceModel;
-
-    var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(product);
-    var priceDetails = priceFactory.getPrice(product, null, false, promotions, null);
-
-    // get list price
-    if (priceDetails && priceDetails.list) {
-        let listPrice = priceDetails.list;
-        result.list = {
-            value: listPrice.value,
-            currencyCode: listPrice.currency,
-            decimalValue: listPrice.decimalPrice,
-            formatted: listPrice.formatted
-        }
+    
+    // Standard prices
+    if (priceModel.price && priceModel.price.available) {
+        result.list = formatPrice(priceModel.price);
     }
-
-    // get sale price
-    if (priceDetails && priceDetails.sales) {
-        let salePrice = priceDetails.sales;
-        result.sale = {
-            value: salePrice.value,
-            currencyCode: salePrice.currency,
-            decimalValue: salePrice.decimalPrice,
-            formatted: salePrice.formatted
-        }
-    }
-
+    
     if (priceModel.priceInfo && priceModel.priceInfo.priceBook) {
         result.priceBook = priceModel.priceInfo.priceBook.ID;
     }
-
+    
+    // Sale price
+    if (priceModel.getPrice().available) {
+        var standardPrice = priceModel.getPrice();
+        result.sale = formatPrice(standardPrice);
+    }
+    
     // All price books
     priceBookIds = new ArrayList();
-
+    
     for (i = 0; i < priceModel.priceInfos.length; i++) {
         priceInfo = priceModel.priceInfos[i];
         if (priceInfo && priceInfo.priceBook) {
             priceBookId = priceInfo.priceBook.ID;
-
+            
             if (!priceBookIds.contains(priceBookId)) {
                 priceBookIds.push(priceBookId);
-
+                
                 price = priceModel.getPriceBookPrice(priceBookId);
                 if (price.available) {
                     result.prices[priceBookId] = formatPrice(price);
@@ -337,7 +335,7 @@ function getProductPrices(product) {
             }
         }
     }
-
+    
     return result;
 }
 
@@ -350,7 +348,7 @@ function formatPrice(price) {
     if (!price || !price.available) {
         return null;
     }
-
+    
     return {
         value: price.value,
         currencyCode: price.currencyCode,
@@ -371,15 +369,15 @@ function convertToJsonValue(value) {
     if (value === null || value === undefined) {
         return null;
     }
-
+    
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
         return value;
     }
-
+    
     if (value instanceof Date) {
         return value.toISOString();
     }
-
+    
     if (value instanceof Money) {
         return {
             value: value.value,
@@ -387,7 +385,7 @@ function convertToJsonValue(value) {
             formatted: value.toFormattedString()
         };
     }
-
+    
     if (value instanceof ArrayList) {
         result = [];
         for (i = 0; i < value.length; i++) {
@@ -395,88 +393,9 @@ function convertToJsonValue(value) {
         }
         return result;
     }
-
+    
     // Default to string representation
     return value.toString();
-}
-
-/**
- * Compares variant data and data exported to live2
- * @param {dw.catalog.Variant} variant - variant object
- * @param {Object} live2VariantData - data from custom attr
- * @returns {boolean} - returns false if variant data are same else true
- */
-function compareLive2VariantData(variant, live2VariantData) {
-    var result = false;
-    var prices = getProductPrices(variant);
-    var availability = getAvailabilityStatus(variant);
-    if ((prices.list && prices.list.value !== live2VariantData.prices.list) ||
-        (prices.sale && prices.sale.value !== live2VariantData.prices.sale) ||
-        live2VariantData.availability !== availability) {
-        result = true;
-    }
-    return result;
-}
-
-function getAllUpdatedCategories(category) {
-    var result = [];
-    var categoryData;
-    var subCategories;
-    var i;
-    var subcategoryResult;
-
-    // Process this category if modified after exported to Live2
-    if (category.lastModified.getTime() > Number(category.custom.live2LastExportedTime) + 3) {
-        categoryData = processSingleCategory(category);
-        if (categoryData) {
-            result.push(categoryData);
-        }
-    }
-
-    // Process subcategories recursively
-    subCategories = category.getSubCategories();
-    if (subCategories && subCategories.length > 0) {
-        for (i = 0; i < subCategories.length; i++) {
-            subcategoryResult = getAllUpdatedCategories(subCategories[i]);
-            result = result.concat(subcategoryResult);
-        }
-    }
-
-    return result;
-}
-
-function processUpdatedProduct(product) {
-    var result;
-    if (!product) {
-        return null;
-    }
-    let isUpdatedVariant = false;
-    if (product.variants) {
-        const variants = product.getVariants();
-        if (variants && variants.length > 0) {
-            for (let i = 0; i < variants.length; i++) {
-                const variant = variants[i];
-                const variantCustom = variant.custom;
-                // compare with last modified time
-                if (('live2LastExportedTime' in variantCustom && variantCustom.live2LastExportedTime && variant.lastModified.valueOf() > Number(variantCustom.live2LastExportedTime) + 100) || !('live2LastExportedTime' in variantCustom)) {
-                    isUpdatedVariant = true;
-                    break;
-                }
-                // compare with prices and availability
-                if ('live2Data' in variantCustom && variantCustom.live2Data) {
-                    var live2VariantData = JSON.parse(variantCustom.live2Data);
-                    isUpdatedVariant = compareLive2VariantData(variant, live2VariantData);
-                    if (isUpdatedVariant) {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    if (isUpdatedVariant) {
-        result = processProduct(product);
-    }
-    return result;
 }
 
 module.exports = {
@@ -487,7 +406,5 @@ module.exports = {
     getAvailabilityStatus: getAvailabilityStatus,
     getProductPrices: getProductPrices,
     formatPrice: formatPrice,
-    convertToJsonValue: convertToJsonValue,
-    getAllUpdatedCategories: getAllUpdatedCategories,
-    processUpdatedProduct: processUpdatedProduct,
-};
+    convertToJsonValue: convertToJsonValue
+}; 

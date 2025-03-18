@@ -38,4 +38,48 @@
             </run-recurring>
         </triggers>
     </job>
-</jobs> 
+    <job job-id="split-catalog-job" priority="0">
+        <description>Job to split the catalog into multiple files</description>
+        <parameters>
+            <parameter name="DestinationURL">
+                <description>URL to send the catalog data to</description>
+                <default-value></default-value>
+            </parameter>
+        </parameters>
+        <flow>
+            <context site-id="SiteGenesis" org-id="f_ecom" />
+            <step step-id="split-catalog-step" type="custom.splitCatalogExport" enforce-restart="false">
+                <description>Split the catalog into multiple files</description>
+                <parameters>
+                    <parameter name="DestinationURL">${Parameters.DestinationURL}</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules>
+            <on-running runtime-threshold="60m" enabled="true">
+                <mark-job-as-hanging />
+            </on-running>
+        </rules>
+        <triggers>
+            <!-- <run-once enabled="false">
+                <date>2025-01-01Z</date>
+                <time>04:00:00.000Z</time>
+            </run-once> -->
+            <run-recurring enabled="true">
+                <recurrence>
+                    <day-of-week>
+                        <weekday>Friday</weekday>
+                        <weekday>Saturday</weekday>
+                        <weekday>Sunday</weekday>
+                        <weekday>Monday</weekday>
+                        <weekday>Tuesday</weekday>
+                        <weekday>Wednesday</weekday>
+                        <weekday>Thursday</weekday>
+                    </day-of-week>
+                    <time>01:00:00.000Z</time>
+                    <relative-to>UTC</relative-to>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+</jobs>
