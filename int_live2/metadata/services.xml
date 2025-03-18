@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
     <service-credential service-credential-id="int_live2.credentials">
-        <url>https://760f-34-93-195-88.ngrok-free.app/api/live2-public/sfcc-products/</url>
+        <url>https://console.live2.ai/api/live2-public/sfcc-products/</url>
         <user-id />
         <password />
     </service-credential>
