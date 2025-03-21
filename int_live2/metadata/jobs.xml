@@ -2,10 +2,12 @@
 <jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
     <job job-id="split-catalog-job">
         <description/>
-        <parameters/>
+        <parameters>
+            <parameter name="DestinationURL">URL to send the catalog data to</parameter>
+        </parameters>
         <flow>
-            <context site-id="Sites"/>
-            <step step-id="splitCatalogExport" type="custom.splitCatalogExport" enforce-restart="false">
+            <context site-id="RefArch"/>
+            <step step-id="split-catalog-export" type="custom.splitCatalogExport" enforce-restart="false">
                 <description/>
                 <parameters/>
             </step>
