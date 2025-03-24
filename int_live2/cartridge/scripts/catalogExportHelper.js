@@ -155,7 +155,7 @@ function processProduct(product) {
     }
 
     // Process images
-    images = product.getImages('large');
+    images = product.getImages('hi-res');
     if (images && images.length > 0) {
         for (j = 0; j < images.length; j++) {
             result.images.push({

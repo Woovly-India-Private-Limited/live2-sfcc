@@ -6,7 +6,7 @@
 
 var LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
 var Logger = require('dw/system/Logger').getLogger('int_live2', 'httpService');
-var preferences = require('*/cartridge/config/preferences');
+var preferences = require('int_live2/cartridge/config/preferences');
 
 /**
  * Create and configure a service for API calls
