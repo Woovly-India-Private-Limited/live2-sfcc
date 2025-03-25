@@ -67,7 +67,7 @@ function executeFullCatalogExport(parameters) {
  * @param {dw.util.HashMap} parameters - Job parameters
  * @returns {dw.system.Status} The execution status
  */
-function splitCatalogExport() {
+function splitCatalogExport(parameters) {
     var startTime;
     var catalogData;
     var destinationURL;
