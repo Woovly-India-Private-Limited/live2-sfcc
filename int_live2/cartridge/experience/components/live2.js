@@ -30,6 +30,8 @@ module.exports.render = function (context, modelIn) {
   }
   model.customCSS = content.customCSS ? content.customCSS : null;
 
+  model.currency = request && request.getSession() ? request.getSession().getCurrency().getCurrencyCode() : '';
+
   // instruct 24 hours relative pagecache
   var expires = new Date();
   expires.setDate(expires.getDate() + 1);
