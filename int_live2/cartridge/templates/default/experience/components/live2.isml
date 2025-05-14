@@ -5,5 +5,57 @@
       data-live2-sfcc-base-url="${URLUtils.url('Cart-AddProduct', "pid", "701643037025M")}"
       data-live2-selected-currency="${pdict.currency}">
 
-    <div class="live2-container"></div>
+     <div class="live2-container"></div>
+
+  <div class="live2-custom-css" style="display: none !important">
+    <style>
+      @media (min-width: 320px) {
+        .live2ai-container {
+          max-inline-size: calc(100vw - 9* 20px) !important;
+        }
+      }
+   .live2ai-layout-wrapper {
+        margin-bottom: 92px !important;
+        margin-top: 0px !important;
+      }
+
+      .live2ai_title_subtitle_wrapper {
+        margin-top: 0px !important;
+        margin-bottom: 40px !important;
+      }
+      .live2ai-carousel-section-title-web {
+        font-family: "nunito_sansregular" !important;
+        font-size: 16px !important;
+        font-weight: 400 !important;
+      }
+
+    .live2ai-carousel-section-sub-title-web {
+        font-family: 'brightgrotesk-book-italic' !important;
+        font-size: 40px !important;
+        font-weight: 500 !important;
+      }
+
+
+      @media screen and (max-width: 767px) {
+        .live2ai-container {
+          max-inline-size: calc(100vw - 2* 20px) !important;
+        }
+
+        .live2ai-carousel-section-title-mob {
+          font-family: 'nunito_sansregular' !important;
+          font-size: 16px !important;
+          font-weight: 400 !important;
+        }
+
+        .live2ai-carousel-section-sub-title-mob {
+          font-family: 'brightgrotesk-book-italic' !important;
+          font-size: 24px !important;
+          font-weight: 500 !important;
+          color: #2F251C !important;
+        }
+
+      }
+
+    </style>
+  </div>
 </div>
