@@ -17,12 +17,6 @@
             "name": "Custom CSS",
             "type": "text",
             "required": false
-          },
-          {
-            "id": "currency",
-            "name": "Currency",
-            "type": "string",
-            "required": true
           }
         ]
       }
