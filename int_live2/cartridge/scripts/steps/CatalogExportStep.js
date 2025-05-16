@@ -7,10 +7,10 @@
 var Status = require('dw/system/Status');
 var Logger = require('dw/system/Logger').getLogger('int_live2', 'catalogExport');
 var System = require('dw/system/System');
-var preferences = require('int_live2/cartridge/config/preferences');
 
 var catalogExportService = require('int_live2/cartridge/scripts/services/catalogExportService');
 var httpService = require('int_live2/cartridge/scripts/services/httpService');
+var preferences = require('*/cartridge/config/preferences');
 
 /**
  * Execute a full catalog export

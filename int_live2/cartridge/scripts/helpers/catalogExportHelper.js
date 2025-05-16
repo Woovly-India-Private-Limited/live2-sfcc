@@ -146,13 +146,13 @@ function processProduct(product) {
     }
 
     // Process images
-    images = product.getImages('hi-res');
+    images = product.getImages('large');
     if (images && images.length > 0) {
         for (j = 0; j < images.length; j++) {
             result.images.push({
                 alt: images[j].alt,
                 title: images[j].title,
-                url: images[j].httpsURL.toString(),
+                url: images[j].URL.toString(),
                 viewType: images[j].viewType ? images[j].viewType.ID : null
             });
         }
@@ -226,10 +226,7 @@ function processVariant(variant) {
     }
 
     var data = {};
-    data.prices = {
-        'list': result.prices && result.prices.list && result.prices.list.value ? result.prices.list.value : null,
-        'sale': result.prices && result.prices.sale && result.prices.sale.value ? result.prices.sale.value : null,
-    };
+    data.prices = result.prices;
     data.availability = result.availabilityStatus;
     Transaction.wrap(function () {
         variant.custom.live2LastExportedTime = Date.now();
@@ -270,74 +267,24 @@ function getAvailabilityStatus(product) {
  * @returns {Object} Object containing all price information
  */
 function getProductPrices(product) {
+    if (!product || !product.priceModel) return { prices: {} };
+
     var PromotionMgr = require('dw/campaign/PromotionMgr');
     var priceFactory = require('*/cartridge/scripts/factories/price');
-    var result = {
-        list: null,
-        sale: null,
-        prices: {}
-    };
-    var priceModel;
-    var priceBookIds;
-    var i;
-    var priceInfo;
-    var priceBookId;
-    var price;
+    var PriceBookMgr = require('dw/catalog/PriceBookMgr');
+    var collections = require('*/cartridge/scripts/util/collections');
 
-    if (!product || !product.priceModel) {
-        return result;
-    }
-
-    priceModel = product.priceModel;
-
-    var promotions = PromotionMgr.activeCustomerPromotions.getProductPromotions(product);
-    var priceDetails = priceFactory.getPrice(product, null, false, promotions, null);
-
-    // get list price
-    if (priceDetails && priceDetails.list) {
-        let listPrice = priceDetails.list;
-        result.list = {
-            value: listPrice.value,
-            currencyCode: listPrice.currency,
-            decimalValue: listPrice.decimalPrice,
-            formatted: listPrice.formatted
-        }
-    }
-
-    // get sale price
-    if (priceDetails && priceDetails.sales) {
-        let salePrice = priceDetails.sales;
-        result.sale = {
-            value: salePrice.value,
-            currencyCode: salePrice.currency,
-            decimalValue: salePrice.decimalPrice,
-            formatted: salePrice.formatted
-        }
-    }
-
-    if (priceModel.priceInfo && priceModel.priceInfo.priceBook) {
-        result.priceBook = priceModel.priceInfo.priceBook.ID;
-    }
-
-    // All price books
-    priceBookIds = new ArrayList();
-
-    for (i = 0; i < priceModel.priceInfos.length; i++) {
-        priceInfo = priceModel.priceInfos[i];
-        if (priceInfo && priceInfo.priceBook) {
-            priceBookId = priceInfo.priceBook.ID;
-
-            if (!priceBookIds.contains(priceBookId)) {
-                priceBookIds.push(priceBookId);
-
-                price = priceModel.getPriceBookPrice(priceBookId);
-                if (price.available) {
-                    result.prices[priceBookId] = formatPrice(price);
-                }
+    var result = {};
+    var priceModel = product.priceModel;
+    var priceBooks = PriceBookMgr.getSitePriceBooks();
+    if (priceBooks && priceBooks.length > 0) {
+        collections.forEach(priceBooks, function (priceBook) {
+            let price = priceModel.getPriceBookPrice(priceBook.ID);
+            if (price.available) {
+                result[priceBook.ID] = formatPrice(price);
             }
-        }
+        });
     }
-
     return result;
 }
 
@@ -407,16 +354,19 @@ function convertToJsonValue(value) {
  * @returns {boolean} - returns false if variant data are same else true
  */
 function compareLive2VariantData(variant, live2VariantData) {
-    var result = false;
-    var prices = getProductPrices(variant);
-    var availability = getAvailabilityStatus(variant);
-    if ((prices.list && prices.list.value !== live2VariantData.prices.list) ||
-        (prices.sale && prices.sale.value !== live2VariantData.prices.sale) ||
-        live2VariantData.availability !== availability) {
-        result = true;
+    const prices = getProductPrices(variant);
+    const availability = getAvailabilityStatus(variant);
+
+    // Compare prices and availability
+    if (prices && live2VariantData.prices && JSON.stringify(prices) !== JSON.stringify(live2VariantData.prices)) {
+        return true;
+    } else if (live2VariantData.availability !== availability) {
+        return true;
     }
-    return result;
+
+    return false;
 }
+
 
 function getAllUpdatedCategories(category) {
     var result = [];
