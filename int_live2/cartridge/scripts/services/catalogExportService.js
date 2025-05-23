@@ -10,8 +10,8 @@ var Site = require('dw/system/Site');
 var Calendar = require('dw/util/Calendar');
 var StringUtils = require('dw/util/StringUtils');
 
-var apiService = require('int_live2/cartridge/scripts/services/httpService');
-var catalogProcessor = require('int_live2/cartridge/scripts/helpers/catalogExportHelper');
+var apiService = require('int_live2_social_wall/cartridge/scripts/services/httpService');
+var catalogProcessor = require('int_live2_social_wall/cartridge/scripts/helpers/catalogExportHelper');
 
 /**
  * Extract all catalog data including categories and products
@@ -22,20 +22,20 @@ function extractFullCatalogData(isSplitCatalogExport) {
     if (!siteCatalog) {
         throw new Error('Site catalog not found');
     }
-    
+
     var root = siteCatalog.getRoot();
     if (!root) {
         throw new Error('Root category not found');
     }
-    
+
     // Get all categories
     var categories;
     if (isSplitCatalogExport) {
-        categories = catalogProcessor.getAllUpdatedCategories(root);        
+        categories = catalogProcessor.getAllUpdatedCategories(root);
     } else {
         categories = catalogProcessor.getAllCategories(root);
     }
-    
+
     // Get all products
     var products = [];
     var totalVariants = 0;

@@ -5,7 +5,7 @@
  */
 
 var Money = require('dw/value/Money');
-var Logger = require('dw/system/Logger').getLogger('int_live2', 'catalogExport');
+var Logger = require('dw/system/Logger').getLogger('int_live2_social_wall', 'catalogExport');
 var ArrayList = require('dw/util/ArrayList');
 var ProductAvailabilityModel = require('dw/catalog/ProductAvailabilityModel');
 
@@ -266,7 +266,7 @@ function getAvailabilityStatus(product) {
     }
 
     availability = product.availabilityModel;
-    
+
     if (availability.inStock) {
         return 'IN_STOCK';
     } else if (availability.availabilityStatus === ProductAvailabilityModel.AVAILABILITY_STATUS_PREORDER) {
@@ -274,7 +274,7 @@ function getAvailabilityStatus(product) {
     } else if (availability.availabilityStatus === ProductAvailabilityModel.AVAILABILITY_STATUS_BACKORDER) {
         return 'BACKORDER';
     }
-    
+
     return 'NOT_AVAILABLE';
 }
 
@@ -299,35 +299,35 @@ function getProductPrices(product) {
     if (!product || !product.priceModel) {
         return result;
     }
-    
+
     priceModel = product.priceModel;
-    
+
     // Standard prices
     if (priceModel.price && priceModel.price.available) {
         result.list = formatPrice(priceModel.price);
     }
-    
+
     if (priceModel.priceInfo && priceModel.priceInfo.priceBook) {
         result.priceBook = priceModel.priceInfo.priceBook.ID;
     }
-    
+
     // Sale price
     if (priceModel.getPrice().available) {
         var standardPrice = priceModel.getPrice();
         result.sale = formatPrice(standardPrice);
     }
-    
+
     // All price books
     priceBookIds = new ArrayList();
-    
+
     for (i = 0; i < priceModel.priceInfos.length; i++) {
         priceInfo = priceModel.priceInfos[i];
         if (priceInfo && priceInfo.priceBook) {
             priceBookId = priceInfo.priceBook.ID;
-            
+
             if (!priceBookIds.contains(priceBookId)) {
                 priceBookIds.push(priceBookId);
-                
+
                 price = priceModel.getPriceBookPrice(priceBookId);
                 if (price.available) {
                     result.prices[priceBookId] = formatPrice(price);
@@ -335,7 +335,7 @@ function getProductPrices(product) {
             }
         }
     }
-    
+
     return result;
 }
 
@@ -348,7 +348,7 @@ function formatPrice(price) {
     if (!price || !price.available) {
         return null;
     }
-    
+
     return {
         value: price.value,
         currencyCode: price.currencyCode,
@@ -369,15 +369,15 @@ function convertToJsonValue(value) {
     if (value === null || value === undefined) {
         return null;
     }
-    
+
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
         return value;
     }
-    
+
     if (value instanceof Date) {
         return value.toISOString();
     }
-    
+
     if (value instanceof Money) {
         return {
             value: value.value,
@@ -385,7 +385,7 @@ function convertToJsonValue(value) {
             formatted: value.toFormattedString()
         };
     }
-    
+
     if (value instanceof ArrayList) {
         result = [];
         for (i = 0; i < value.length; i++) {
@@ -393,7 +393,7 @@ function convertToJsonValue(value) {
         }
         return result;
     }
-    
+
     // Default to string representation
     return value.toString();
 }

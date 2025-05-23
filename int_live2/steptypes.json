@@ -6,7 +6,7 @@
                 "@supports-site-context": true,
                 "@supports-parallel-execution": "false",
                 "description": "Catalog Export",
-                "module": "int_live2/cartridge/scripts/steps/CatalogExportStep",
+                "module": "int_live2_social_wall/cartridge/scripts/steps/CatalogExportStep",
                 "function": "executeFullCatalogExport",
                 "status-codes": {
                     "status": [
@@ -30,7 +30,7 @@
                 "@supports-site-context": true,
                 "@supports-parallel-execution": "false",
                 "description": "Split Catalog Export",
-                "module": "int_live2/cartridge/scripts/steps/CatalogExportStep",
+                "module": "int_live2_social_wall/cartridge/scripts/steps/CatalogExportStep",
                 "function": "splitCatalogExport",
                 "status-codes": {
                     "status": [

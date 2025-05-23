@@ -5,7 +5,7 @@
  */
 
 var Money = require('dw/value/Money');
-var Logger = require('dw/system/Logger').getLogger('int_live2', 'catalogExport');
+var Logger = require('dw/system/Logger').getLogger('int_live2_social_wall', 'catalogExport');
 var ArrayList = require('dw/util/ArrayList');
 var ProductAvailabilityModel = require('dw/catalog/ProductAvailabilityModel');
 var Transaction = require('dw/system/Transaction');

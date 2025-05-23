@@ -5,15 +5,15 @@
  */
 
 var LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
-var Logger = require('dw/system/Logger').getLogger('int_live2', 'httpService');
-var preferences = require('int_live2/cartridge/config/preferences');
+var Logger = require('dw/system/Logger').getLogger('int_live2_social_wall', 'httpService');
+var preferences = require('int_live2_social_wall/cartridge/config/preferences');
 
 /**
  * Create and configure a service for API calls
  * @returns {dw.svc.Service} Configured service instance
  */
 function getHttpService() {
-  return LocalServiceRegistry.createService('int_live2.http.service', {
+  return LocalServiceRegistry.createService('int_live2_social_wall.http.service', {
     createRequest: function (service, requestData) {
       var headers;
       var headersObj;
@@ -36,10 +36,10 @@ function getHttpService() {
       }
 
       // Add authentication headers if available
-    //   apiKey = preferences.catalogExportApiKey;
-    //   if (apiKey) {
-    //     service.addHeader('Authorization', 'Bearer ' + apiKey);
-    //   }
+      //   apiKey = preferences.catalogExportApiKey;
+      //   if (apiKey) {
+      //     service.addHeader('Authorization', 'Bearer ' + apiKey);
+      //   }
 
       return JSON.stringify(requestData);
     },
