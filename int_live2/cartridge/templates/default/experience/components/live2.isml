@@ -1,8 +1,10 @@
-<div  data-live2-embed="1"
-       data-live2-picked-up="0"
-       data-live2-loaded="0"
-       data-live2-embed-id="${pdict.publishID}"
-       data-live2-sfcc-base-url="${URLUtils.url('Cart-AddProduct', "pid", "701643037025M")}">
+<div  data-live2-social-wall-embed="1"
+    data-live2-social-wall-picked-up="0"
+    data-live2-social-wall-loaded="0"
+    data-live2-social-wall-embed-id="${pdict.publishID}"
+    data-live2-social-wall-team-id="67d7d259652f075bf980d6e2"
+    data-live2-product="socialwall"
+    data-live2-sfcc-base-url="${URLUtils.url('Cart-AddProduct', "pid", "701643037025M")}">
 
      <div class="live2-container"></div>
 

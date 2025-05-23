@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
-    <service-credential service-credential-id="int_live2.credentials">
+    <service-credential service-credential-id="int_live2_social_wall.credentials">
         <url>https://console.live2.ai/api/live2-public/sfcc-products/</url>
         <user-id />
         <password />
     </service-credential>
 
-    <service-profile service-profile-id="int_live2.profile">
+    <service-profile service-profile-id="int_live2_social_wall.profile">
         <timeout-millis>30000</timeout-millis>
         <rate-limit-enabled>false</rate-limit-enabled>
         <rate-limit-calls>0</rate-limit-calls>
@@ -16,15 +16,15 @@
         <cb-millis>500</cb-millis>
     </service-profile>
 
-    <service service-id="int_live2.http.service">
+    <service service-id="int_live2_social_wall.http.service">
         <service-type>HTTP</service-type>
         <enabled>true</enabled>
-        <log-prefix>int_live2</log-prefix>
+        <log-prefix>int_live2_social_wall</log-prefix>
         <comm-log-enabled>false</comm-log-enabled>
         <force-prd-enabled>true</force-prd-enabled>
         <mock-mode-enabled>false</mock-mode-enabled>
-        <profile-id>int_live2.profile</profile-id>
-        <credential-id>int_live2.credentials</credential-id>
+        <profile-id>int_live2_social_wall.profile</profile-id>
+        <credential-id>int_live2_social_wall.credentials</credential-id>
     </service>
 
 </services>

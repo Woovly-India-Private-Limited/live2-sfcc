@@ -57,6 +57,6 @@ ${dw.system.HookMgr.callHook('app.template.htmlHead', 'htmlHead', pdict) || ''}
 <link rel="stylesheet" href="${URLUtils.staticURL('/css/skin/skin.css')}" />
 
 <iscomment> Live2 AI SDK </iscomment>
-<isset name="preferences" value="${require('int_live2/cartridge/config/preferences')}" scope="page"/>
+<isset name="preferences" value="${require('int_live2_social_wall/cartridge/config/preferences')}" scope="page"/>
 <script src="${preferences.live2AIsdk}" defer></script>
 <script src="https://cdn.live2.ai/assets/social-wall-sdk/latest/live2ai-embed-sdk.js" defer></script>
