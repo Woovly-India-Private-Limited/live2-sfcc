@@ -8,5 +8,6 @@ module.exports = {
     catalogExportApiKey: currentSite.getCustomPreferenceValue('catalogExportApiKey'),
     catalogExportDestinationURL: currentSite.getCustomPreferenceValue('catalogExportDestinationURL'),
     live2AIsdk: currentSite.getCustomPreferenceValue('live2AIsdk'),
+    live2SocialWallsdk: currentSite.getCustomPreferenceValue('live2SocialWallsdk'),
     live2ATeamId: currentSite.getCustomPreferenceValue('live2ATeamId')
 };
