@@ -9,6 +9,7 @@ var CatalogMgr = require('dw/catalog/CatalogMgr');
 var Site = require('dw/system/Site');
 var Calendar = require('dw/util/Calendar');
 var StringUtils = require('dw/util/StringUtils');
+var URLUtils = require('dw/web/URLUtils');
 
 var apiService = require('int_live2/cartridge/scripts/services/httpService');
 var catalogProcessor = require('int_live2/cartridge/scripts/helpers/catalogExportHelper');
@@ -62,6 +63,8 @@ function extractFullCatalogData(isSplitCatalogExport) {
     return {
         exportTimestamp: StringUtils.formatCalendar(new Calendar(), 'yyyy-MM-dd\'T\'HH:mm:ss.SSS\'Z\''),
         siteId: Site.getCurrent().getID(),
+        defaultCurrency: Site.getCurrent().getDefaultCurrency(),
+        storeUrl: URLUtils.httpsHome().toString(),
         categories: categories,
         products: products,
         totalVariants: totalVariants

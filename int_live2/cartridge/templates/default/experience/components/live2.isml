@@ -1,8 +1,9 @@
 <div  data-live2-embed="1"
-       data-live2-picked-up="0"
-       data-live2-loaded="0"
-       data-live2-embed-id="${pdict.publishID}"
-       data-live2-sfcc-base-url="${URLUtils.url('Cart-AddProduct', "pid", "701643037025M")}">
+      data-live2-picked-up="0"
+      data-live2-loaded="0"
+      data-live2-embed-id="${pdict.publishID}"
+      data-live2-sfcc-base-url="${URLUtils.url('Cart-AddProduct', "pid", "701643037025M")}"
+      data-live2-selected-currency="${pdict.currency}">
 
      <div class="live2-container"></div>
 
